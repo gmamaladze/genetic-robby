@@ -1,0 +1,12 @@
+{
+  "mutationProbability": 0.05,
+  "survivorQuota": 0.3,
+  "populationSize": 200,
+  "numberOfBoards": 100,
+  "boardWidth": 10,
+  "boardHeight": 10,
+  "numberOfCans": 50,
+  "numberOfMoves": 200,
+  "numberOfGenerations": 200,
+  "numberOfThreads": 16
+}
