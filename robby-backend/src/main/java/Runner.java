@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -13,13 +14,15 @@ public class Runner {
 
 	private final ExecutorService executor;
 	private Configuration configuration;
+	private ResultWriter writer;
 
 	public Runner(Configuration configuration) {
 		this.executor = Executors.newFixedThreadPool(configuration.getNumberOfThreads());
 		this.configuration = configuration;
 	}
 
-	public void runCivilization() throws InterruptedException {
+	public void runCivilization(ResultWriter writer) throws InterruptedException, IOException {
+		this.writer = writer;
 
 		DNA[] population = Stream
 			.generate(DNA::getRandom)
@@ -38,20 +41,20 @@ public class Runner {
 
 			save(result);
 
-			int descendantCount = configuration.getPopulationSize() - result.survivors.length;
-			int pairsCount = result.survivors.length / 2;
+			int descendantCount = configuration.getPopulationSize() - result.getSurvivors().length;
+			int pairsCount = result.getSurvivors().length / 2;
 
 			Stream<DNA> descendants = IntStream
 					.range(0, descendantCount)
 					.map(descendantIndex -> descendantIndex % pairsCount)
 					.mapToObj(pairIndex -> DNA.crossbreed(
-							result.survivors[pairIndex],
-							result.survivors[pairsCount + pairIndex],
+							result.getSurvivors()[pairIndex],
+							result.getSurvivors()[pairsCount + pairIndex],
 							configuration.getMutationProbability()))
 					;
 
 			population = Stream.concat(
-					Arrays.stream(result.survivors),
+					Arrays.stream(result.getSurvivors()),
 					descendants)
 				.toArray(DNA[]::new);
 		}
@@ -88,8 +91,8 @@ public class Runner {
 				})
 				.collect(
 						Collectors.groupingBy(
-								r -> r.DNA,
-								Collectors.averagingDouble(r -> r.score)))
+								LifeResult::getDNA,
+								Collectors.averagingDouble(LifeResult::getScore)))
 				.entrySet()
 				.stream()
 				.sorted(reverseOrder(Map.Entry.comparingByValue()))
@@ -112,14 +115,15 @@ public class Runner {
 		return new GenerationResult(generationId, maxScore, avgScore, survivors);
 	}
 
-	private void save(GenerationResult generationResult) {
+	private void save(GenerationResult generationResult) throws IOException {
+
 		System.out.println(generationResult);
+		writer.write(generationResult);
 	}
 
 	private LifeResult liveOne(Board board, Robby robot) {
 		for (int moveCount = 0; moveCount < this.configuration.getNumberOfMoves(); moveCount++) {
-			ActionResult result = robot.move(board);
-			//System.out.println(result);
+			robot.move(board);
 		}
 		return new LifeResult(
 				robot.getDNA(),
@@ -129,41 +133,6 @@ public class Runner {
 
 	public void shutdown() {
 		executor.shutdown();
-	}
-
-	static class LifeResult {
-		public int score;
-		public DNA DNA;
-
-		public LifeResult(DNA DNA, int score) {
-
-			this.DNA = DNA;
-			this.score = score;
-		}
-	}
-
-	static class GenerationResult {
-		public double avgScore;
-		public long generationId;
-		public double maxScore;
-		public DNA[] survivors;
-
-		public GenerationResult(long generationId, double maxScore, double avgScore, DNA[] survivors) {
-			this.generationId = generationId;
-			this.maxScore = maxScore;
-			this.avgScore = avgScore;
-			this.survivors = survivors;
-		}
-
-		@Override
-		public String toString() {
-			return String.format("GenerationResult{ " +
-					"generationId=%5d " +
-					", maxScore=%10.4f " +
-					", avgScore=%10.4f " +
-					", survivorsCount=%4d " +
-					'}', generationId, maxScore, avgScore, survivors.length);
-		}
 	}
 
 

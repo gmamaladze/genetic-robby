@@ -1,3 +1,5 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
@@ -131,8 +133,7 @@ class TestX {
 
         for (int i = 0; i < cycles; i++) {
             DNA a = DNA.getRandom();
-            DNA b = a.clone();
-            b.mutate(mutationProbability);
+            DNA b = DNA.mutate(a, mutationProbability);
             for (int j = 0; j < DNA.length; j++) {
                 Situation situation = new Situation(j);
                 Action aAction = a.getAction(situation);
@@ -144,5 +145,13 @@ class TestX {
         double mutationRate = (double) diffCounter / (cycles * DNA.length);
         double deviation = 1 - Math.abs(mutationRate - mutationProbability / mutationProbability);
         assertTrue( deviation < 0.01 );
+    }
+
+    @Test
+    void deserializeDNA() throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        DNA dna = DNA.getRandom();
+        String json = om.writeValueAsString(dna);
+        System.out.println(json);
     }
 }

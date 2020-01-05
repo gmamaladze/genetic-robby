@@ -1,38 +1,45 @@
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY )
 public class DNA {
 
     public static final int length = (int)Math.pow(Content.values().length, PositionOffset.values().length);
     public static final Random random = new Random(System.currentTimeMillis());
-
     private static final int POSSIBLE_ACTION_COUNT = Action.values().length;
+    private static final AtomicLong uniqueCounter = new AtomicLong();
 
+    private final long uniqueId;
     private final int[] dna;
 
-    private static final AtomicLong uniqueCounter = new AtomicLong();
-    private final long uniqueId;
-
-    DNA(int[] dna) {
-        this.uniqueId = uniqueCounter.incrementAndGet();
+    @JsonCreator
+    DNA(@JsonProperty("id") long uniqueId,
+        @JsonProperty("dna") int[] dna) {
+        this.uniqueId = uniqueId;
         this.dna = dna;
     }
 
     public static DNA getRandom() {
         int[] dna = IntStream.range(0, length).map( i -> DNA.getRandomAction()).toArray();
-        return new DNA(dna);
+        long uniqueId = uniqueCounter.incrementAndGet();
+        return new DNA(uniqueId, dna);
     }
 
-    public DNA mutate(double mutationProbability) {
+    public static DNA mutate(DNA dna, double mutationProbability) {
+        dna = dna.clone();
         double[] chance = random.doubles(length).toArray();
         for (int i=0; i<length; i++) {
             boolean doMutate = chance[i] <= mutationProbability;
-            this.dna[i] = doMutate ? getRandomAction(this.dna[i]) : this.dna[i];
+            dna.dna[i] = doMutate ? getRandomAction(dna.dna[i]) : dna.dna[i];
         }
-        return this;
+        return dna;
     }
 
     private static int getRandomAction() {
@@ -48,18 +55,18 @@ public class DNA {
 
     public static DNA crossbreed(DNA a, DNA b, double mutationProbability) {
         double[] chance = random.doubles(length).toArray();
-
-        DNA DNA = merge(a, b, chance);
-        DNA.mutate(mutationProbability);
-        return DNA;
+        DNA merged = merge(a, b, chance);
+        merged = DNA.mutate(merged, mutationProbability);
+        return merged;
     }
 
     public static DNA merge(DNA a, DNA b, double[] chance) {
-        int[] c = new int[length];
+        var c = new int[length];
         for (int i=0; i<length; i++) {
             c[i] = chance[i]>0.5 ? a.dna[i] : b.dna[i];
         }
-        return new DNA(c);
+        long uniqueId = uniqueCounter.incrementAndGet();
+        return new DNA(uniqueId, c);
     }
 
     public Action getAction(Situation situation) {
@@ -83,7 +90,8 @@ public class DNA {
 
     @Override
     protected DNA clone() {
-        return new DNA(this.dna.clone());
+        long uniqueId = uniqueCounter.incrementAndGet();
+        return new DNA(uniqueId, this.dna.clone());
     }
 
     @Override
