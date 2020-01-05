@@ -1,5 +1,3 @@
-import java.util.Random;
-
 public class BoardSimple extends Board {
 
     private final boolean[][] cans;
@@ -19,7 +17,6 @@ public class BoardSimple extends Board {
     }
 
 
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public Board clone() {
         return new BoardSimple(this.cans.clone());
@@ -41,10 +38,10 @@ public class BoardSimple extends Board {
 
     @Override
     public Situation getSituationAt(Position position) {
-        PositionOffset[] offsets = PositionOffset.values();
+        Offset[] offsets = Offset.values();
         Content[] situation = new Content[offsets.length];
         for (int i = 0; i < offsets.length; i++) {
-            PositionOffset offset = offsets[i];
+            Offset offset = offsets[i];
             Position currentPosition = offset.from(position);
             situation[i] = getContentAt(currentPosition);
         }

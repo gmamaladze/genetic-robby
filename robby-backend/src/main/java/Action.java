@@ -5,25 +5,25 @@ public enum Action {
     MoveNorth   (0) {
         @Override
         public ActionResult perform(Position position, Board board) {
-            return this.move(position, board, PositionOffset.NORTH);
+            return this.move(position, board, Offset.NORTH);
         }
     },
     MoveSouth   (1) {
         @Override
         public ActionResult perform(Position position, Board board) {
-            return this.move(position, board, PositionOffset.SOUTH);
+            return this.move(position, board, Offset.SOUTH);
         }
     },
     MoveEast    (2) {
         @Override
         public ActionResult perform(Position position, Board board) {
-            return this.move(position, board, PositionOffset.EAST);
+            return this.move(position, board, Offset.EAST);
         }
     },
     MoveWest    (3) {
         @Override
         public ActionResult perform(Position position, Board board) {
-            return this.move(position, board, PositionOffset.WEST);
+            return this.move(position, board, Offset.WEST);
         }
     },
     StayPut     (4) {
@@ -43,15 +43,15 @@ public enum Action {
     MoveRandom  (6) {
         @Override
         public ActionResult perform(Position position, Board board) {
-            PositionOffset offset;
+            Offset offset;
             do {
-                offset = PositionOffset.values()[this.random.nextInt(PositionOffset.values().length)];
-            } while (offset==PositionOffset.CURRENT);
+                offset = Offset.values()[this.random.nextInt(Offset.values().length)];
+            } while (offset == Offset.CURRENT);
             return move(position, board, offset);
         }
     };
 
-    protected ActionResult move(Position position, Board board, PositionOffset offset) {
+    protected ActionResult move(Position position, Board board, Offset offset) {
         Position newPosition = offset.from(position);
         boolean isWall = board.isWall(newPosition);
         int reward = isWall ? -5 : 0;

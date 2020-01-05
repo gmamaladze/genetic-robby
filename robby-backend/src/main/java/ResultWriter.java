@@ -9,8 +9,10 @@ public class ResultWriter implements AutoCloseable {
 
     private final SequenceWriter seqWriter;
     private final ObjectMapper mapper;
+    private String dirName;
 
     public ResultWriter(String directoryName) throws IOException {
+        dirName = directoryName;
         File file = new File(directoryName + "/summary.json");
         FileWriter fileWriter = new FileWriter(file, true);
         mapper = new ObjectMapper();
@@ -23,7 +25,7 @@ public class ResultWriter implements AutoCloseable {
     }
 
     private void writeFull(GenResult genResult) throws IOException {
-        String fileName = String.format("gen-%4d.json", genResult.getGenerationId());
+        String fileName = String.format(this.dirName + "/gen-%04d.json", genResult.getGenerationId());
         this.mapper.writeValue(new File(fileName), genResult);
     }
 

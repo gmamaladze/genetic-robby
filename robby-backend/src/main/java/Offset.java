@@ -1,14 +1,14 @@
-public enum PositionOffset {
+public enum Offset {
     NORTH {
         @Override
         public Position from(Position position) {
-            return new Position(position.x, position.y-1);
+            return new Position(position.x, position.y - 1);
         }
     },
     EAST {
         @Override
         public Position from(Position position) {
-            return new Position(position.x+1, position.y);
+            return new Position(position.x + 1, position.y);
         }
     },
     SOUTH {

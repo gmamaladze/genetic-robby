@@ -1,10 +1,9 @@
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class Situation {
 
     static final int k = Content.values().length;
-    static final int n = PositionOffset.values().length;
+    static final int n = Offset.values().length;
     private final int code;
 
     public Situation(Content[] contents) {

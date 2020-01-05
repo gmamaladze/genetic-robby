@@ -13,8 +13,9 @@ public class Configuration {
     private int boardHeight = 10;
     private int numberOfCans = 50;
     private int numberOfMoves = 200;
-    private long numberOfGenerations = 1000000;
+    private long numberOfGenerations = 3000;
     private int numberOfThreads = 16;
+    private boolean debug = false;
 
     public static Configuration getDefault() {
         return new Configuration();
@@ -108,5 +109,30 @@ public class Configuration {
 
     public void setNumberOfThreads(int numberOfThreads) {
         this.numberOfThreads = numberOfThreads;
+    }
+
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "mutationProbability=" + mutationProbability +
+                ", survivorQuota=" + survivorQuota +
+                ", populationSize=" + populationSize +
+                ", numberOfBoards=" + numberOfBoards +
+                ", boardWidth=" + boardWidth +
+                ", boardHeight=" + boardHeight +
+                ", numberOfCans=" + numberOfCans +
+                ", numberOfMoves=" + numberOfMoves +
+                ", numberOfGenerations=" + numberOfGenerations +
+                ", numberOfThreads=" + numberOfThreads +
+                '}';
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+
+        this.debug = debug;
     }
 }

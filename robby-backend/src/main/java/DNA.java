@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Arrays;
@@ -11,7 +10,7 @@ import java.util.stream.IntStream;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY )
 public class DNA {
 
-    public static final int length = (int)Math.pow(Content.values().length, PositionOffset.values().length);
+    public static final int length = (int) Math.pow(Content.values().length, Offset.values().length);
     public static final Random random = new Random(System.currentTimeMillis());
     private static final int POSSIBLE_ACTION_COUNT = Action.values().length;
     private static final AtomicLong uniqueCounter = new AtomicLong();
@@ -88,6 +87,7 @@ public class DNA {
         return dna.uniqueId == this.uniqueId;
     }
 
+    @SuppressWarnings({"CloneDoesntDeclareCloneNotSupportedException", "MethodDoesntCallSuperMethod"})
     @Override
     protected DNA clone() {
         long uniqueId = uniqueCounter.incrementAndGet();

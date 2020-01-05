@@ -33,14 +33,14 @@ class TestX {
                 }
                 if (j!=10-1) {
                     fifo.add(xDirection);
-                    current =  xDirection==Action.MoveWest
-                            ? PositionOffset.WEST.from(current)
-                            : PositionOffset.EAST.from(current);
+                    current = xDirection == Action.MoveWest
+                            ? Offset.WEST.from(current)
+                            : Offset.EAST.from(current);
                 }
             }
             if (i!=10-1) {
                 fifo.add(Action.MoveSouth);
-                current = PositionOffset.SOUTH.from(current);
+                current = Offset.SOUTH.from(current);
             }
         }
 

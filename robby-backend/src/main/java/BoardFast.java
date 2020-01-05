@@ -35,8 +35,8 @@ public class BoardFast extends Board {
         boolean ok = this.boardSimple.tryRemoveCan(position);
         if (!ok) return false;
 
-        PositionOffset[] offsets = PositionOffset.values();
-        for (PositionOffset offset : offsets) {
+        Offset[] offsets = Offset.values();
+        for (Offset offset : offsets) {
             Position current = offset.from(position);
             if (isWall(current)) continue;
             this.situationCodes[current.x][current.y] = this.boardSimple.getSituationAt(current).getCode();
