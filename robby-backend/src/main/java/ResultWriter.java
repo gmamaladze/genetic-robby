@@ -8,25 +8,36 @@ import java.io.IOException;
 public class ResultWriter implements AutoCloseable {
 
     private final SequenceWriter seqWriter;
+    private final ObjectMapper mapper;
 
     public ResultWriter(String directoryName) throws IOException {
         File file = new File(directoryName + "/summary.json");
         FileWriter fileWriter = new FileWriter(file, true);
-        ObjectMapper mapper = new ObjectMapper();
+        mapper = new ObjectMapper();
         seqWriter = mapper.writer().writeValuesAsArray(fileWriter);
     }
 
-    public void write(GenerationResult generationResult) throws IOException {
+    public void write(GenResult genResult) throws IOException {
+        writeSummary(genResult);
+        writeFull(genResult);
+    }
+
+    private void writeFull(GenResult genResult) throws IOException {
+        String fileName = String.format("gen-%4d.json", genResult.getGenerationId());
+        this.mapper.writeValue(new File(fileName), genResult);
+    }
+
+    private void writeSummary(GenResult genResult) throws IOException {
         SummaryEntry summaryEntry = new SummaryEntry(
-                generationResult.getGenerationId(),
-                generationResult.getMaxScore(),
-                generationResult.getAvgScore());
-        seqWriter.write(summaryEntry);
+                genResult.getGenerationId(),
+                genResult.getMaxScore(),
+                genResult.getAvgScore());
+        this.seqWriter.write(summaryEntry);
     }
 
     @Override
     public void close() throws IOException {
-        seqWriter.close();
+        this.seqWriter.close();
     }
 
     static class SummaryEntry {
@@ -41,9 +52,5 @@ public class ResultWriter implements AutoCloseable {
             this.maxScore = maxScore;
             this.avgScore = avgScore;
         }
-    }
-
-    static class FullEntry {
-
     }
 }

@@ -1,6 +1,5 @@
 public class BoardFast extends Board {
 
-
     private final int[][] situationCodes;
     private BoardSimple boardSimple;
 

@@ -1,15 +1,12 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.io.File;
-import java.io.IOException;
-
-public class GenerationResult {
+public class GenResult {
     private double avgScore;
     private long generationId;
     private double maxScore;
     private DNA[] survivors;
 
-    public GenerationResult(long generationId, double maxScore, double avgScore, DNA[] survivors) {
+    public GenResult(long generationId, double maxScore, double avgScore, DNA[] survivors) {
         this.generationId = generationId;
         this.maxScore = maxScore;
         this.avgScore = avgScore;
@@ -38,7 +35,12 @@ public class GenerationResult {
         return maxScore;
     }
 
+    @JsonIgnore
     public DNA[] getSurvivors() {
         return survivors;
+    }
+
+    public DNA getBestSurvivor() {
+        return survivors[0];
     }
 }

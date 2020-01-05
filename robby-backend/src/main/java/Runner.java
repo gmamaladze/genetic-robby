@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -8,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
 import static java.util.Collections.reverseOrder;
 
 public class Runner {
@@ -33,7 +33,7 @@ public class Runner {
 
 			Board[] boardBlueprints = getBoardBlueprints();
 
-			GenerationResult result = runGeneration(
+			GenResult result = runGeneration(
 					generationId,
 					boardBlueprints,
 					population,
@@ -67,9 +67,9 @@ public class Runner {
 				.toArray(Board[]::new);
 	}
 
-	private GenerationResult runGeneration(long generationId, Board[] boardBlueprints, DNA[] strategies, ExecutorService executor) throws InterruptedException {
+	private GenResult runGeneration(long generationId, Board[] boardBlueprints, DNA[] strategies, ExecutorService executor) throws InterruptedException {
 		List<Callable<LifeResult>> lives = new ArrayList<>(boardBlueprints.length * strategies.length);
-		for (Board boardBlueprint: boardBlueprints) {
+		for (Board boardBlueprint : boardBlueprints) {
 			for (DNA DNA : strategies) {
 				Board board = boardBlueprint.clone();
 				Robby robot = new Robby(DNA);
@@ -77,7 +77,7 @@ public class Runner {
 			}
 		}
 
-		int survivorCount = (int)Math.round(strategies.length * configuration.getSurvivorQuota());
+		int survivorCount = (int) Math.round(strategies.length * configuration.getSurvivorQuota());
 		LinkedHashMap<DNA, Double> scoredSurvivors = executor
 				.invokeAll(lives)
 				.stream()
@@ -112,13 +112,13 @@ public class Runner {
 						.average()
 						.orElse(Double.NaN);
 
-		return new GenerationResult(generationId, maxScore, avgScore, survivors);
+		return new GenResult(generationId, maxScore, avgScore, survivors);
 	}
 
-	private void save(GenerationResult generationResult) throws IOException {
+	private void save(GenResult genResult) throws IOException {
 
-		System.out.println(generationResult);
-		writer.write(generationResult);
+		System.out.println(genResult);
+		writer.write(genResult);
 	}
 
 	private LifeResult liveOne(Board board, Robby robot) {

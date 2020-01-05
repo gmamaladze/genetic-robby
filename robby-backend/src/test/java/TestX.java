@@ -144,7 +144,7 @@ class TestX {
 
         double mutationRate = (double) diffCounter / (cycles * DNA.length);
         double deviation = 1 - Math.abs(mutationRate - mutationProbability / mutationProbability);
-        assertTrue( deviation < 0.01 );
+        assertTrue(deviation < 0.01);
     }
 
     @Test
@@ -152,6 +152,15 @@ class TestX {
         ObjectMapper om = new ObjectMapper();
         DNA dna = DNA.getRandom();
         String json = om.writeValueAsString(dna);
+        System.out.println(json);
+    }
+
+    @Test
+    void deserializeGenerationResult() throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        DNA[] survivors = IntStream.range(0, 10).mapToObj(i -> DNA.getRandom()).toArray(DNA[]::new);
+        GenResult genResult = new GenResult(42, 0.5, 0.3, survivors);
+        String json = om.writeValueAsString(genResult);
         System.out.println(json);
     }
 }
