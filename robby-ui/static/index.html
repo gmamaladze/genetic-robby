@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--suppress ES6ModulesDependencies -->
+<html lang="en">
+
+<head>
+    <title>Robot Robby - genetic algorithm</title>
+    <link href="css/main.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Robot Robby - genetic algorithm</h1>
+    <br>NOTE: The page will only run correctly in ES6 compatible (newer) browsers.<br>
+    <small>
+        repository: <a href="https://github.com/gmamaladze/deep-snake">https://github.com/gmamaladze/deep-robot</a> |
+        (c) George Mamaladze |
+        license: MIT
+    </small>
+</div>
+
+
+<div class="container">
+    <div class="box left" id="simulation">
+        <span>some</span>
+    </div>
+    <div class="box left" id="stats">
+        <span>learning PROGRESS.</span>
+    </div>
+</div>
+
+<div class="text">
+    <h2>What is this?</h2>
+    <p>
+        My goal was to create a simple demo of deep learning which is:
+    <ul>
+        <li>
+            very small, but still funny
+        </li>
+    </ul>
+    </p>
+    <p>
+        It is a toy. You can see how the robot is trained and gets gradually better.
+        The whole deep learning "magic" is happening in your browser. By reloading the page you are wiping Robby's
+        "brain". The complete code including visualization and the logic of the game is less then 500 lines.
+    </p>
+</div>
+
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="js/deepsnake.js"></script>
+<script>
+
+    const interval = 100;
+    const palette = d3.schemeCategory10;
+    const blue = palette[0];
+    const orange = palette[1];
+    const green = palette[2];
+    const red = palette[3];
+
+
+    (function simulator() {
+        let game = new deepsnake.Game();
+        let grid = new deepsnake.Grid("#simulation").color(orange, green);
+
+        function loop() {
+            let decision = game.hint();
+            game.tick(decision, function draw(cells) {
+                grid.draw(cells);
+            });
+            setTimeout(loop, interval);
+        }
+
+        loop();
+    })();
+
+    (function stats() {
+        let chart = new deepsnake.Chart("#stats", "loose", [240, 240], 50, 1);
+        let color = d3.scaleLinear().domain([0.15, 0.5]).interpolate(d3.interpolateHcl).range([green, orange, red]);
+
+        function loop() {
+            chart.push(brain.loss);
+            chart.color(color(chart.avg()));
+            setTimeout(loop, interval * 5);
+        }
+
+        loop();
+    })();
+</script>
+
+
+</body>
+
+</html>

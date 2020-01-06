@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/genetic-robby.iml" filepath="$PROJECT_DIR$/.idea/genetic-robby.iml" />
       <module fileurl="file://$PROJECT_DIR$/robby-backend/robby-backend.iml" filepath="$PROJECT_DIR$/robby-backend/robby-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/robby-ui/robby-ui.iml" filepath="$PROJECT_DIR$/robby-ui/robby-ui.iml" />
     </modules>
   </component>
 </project>

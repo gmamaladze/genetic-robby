@@ -1,0 +1,28 @@
+{
+  "name": "deep-snake",
+  "version": "1.0.0",
+  "description": "A snake game trained using simple deep learning implemented in client side javascript.",
+  "main": "bundle.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "^4.0.2",
+    "connect": "^3.6.2",
+    "rollup": "^0.43.0",
+    "serve-static": "^1.12.3"
+  },
+  "devDependencies": {
+    "mocha": "^7.0.0"
+  },
+  "scripts": {
+    "test": "mocha",
+    "postinstall": "rollup src/index.js --format umd --name deepsnake --output build/js/deepsnake.js; cp -r static/* build"
+  },
+  "author": "George Mamaladze",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gmamaladze/deep-snake"
+  }
+}
