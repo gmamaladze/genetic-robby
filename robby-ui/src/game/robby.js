@@ -4,54 +4,31 @@ import {Point} from "./point.js";
 
 export {Robby};
 
-function Robby(position = new Point()) {
-    this.body = [position];
-    this.length = this.initLength;
-    this.isAlive = true;
-    this.score = 0;
-
-    let direction = DIRECTIONS.getRandom();
-    while (this.length < this.body.length) {
-        this.move(direction);
-    }
+function Robby(position = new Point(0, 0)) {
+    this._head = position;
+    this._trace = [];
+    this._score = 0;
     return this;
 }
 
+function score() {
+    return this._score;
+}
+
 function head() {
-    return this.body[0];
+    return this._head;
 }
 
 function move(direction) {
     let head = this.body[0].add(direction);
-    this.body.unshift(head);
+    this._trace.unshift(head);
     return this;
-}
-
-function grow() {
-    this.score++;
-    if (this.length < this.maxLength) this.length++;
-    return this;
-}
-
-function eat(food) {
-    food.kill();
-    return this.grow();
-}
-
-function trim() {
-    while (this.body.length > this.length) {
-        this.body.pop();
-    }
-    return this;
-}
-
-function kill() {
-    this.isAlive = false;
 }
 
 function getCells() {
     let being = this;
-    return this.body.map(function (point) {
+    return [this._head].concat(this._trace).map(function (point) {
+        being = point.equals(this.head()) ? "robot" : "trace";
         return {point, being}
     });
 }
@@ -59,12 +36,7 @@ function getCells() {
 Robby.prototype = {
     head,
     move,
-    eat,
-    grow,
-    trim,
-    kill,
+    score,
     getCells,
-    initLength: 3,
-    maxLength: 3,
-    kind: "snake"
+    traceLength: 10
 };

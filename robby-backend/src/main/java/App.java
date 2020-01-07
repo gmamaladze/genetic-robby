@@ -1,5 +1,6 @@
 import org.apache.commons.cli.*;
 
+import java.io.File;
 import java.io.IOException;
 
 public class App {
@@ -45,6 +46,13 @@ public class App {
 			return;
 		} else {
 			outDir = line.getOptionValue("o");
+			File directory = new File(outDir);
+			if (! directory.exists()){
+				if (!directory.mkdirs()) {
+					System.out.println(String.format("Could not create output directory %s.", outDir));
+					System.exit(4);
+				}
+			}
 		}
 
 		if (line.hasOption("h")) {

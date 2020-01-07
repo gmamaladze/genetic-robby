@@ -1,41 +1,32 @@
 'use strict';
 
 import {Robby} from "./robby.js";
-
-import {Can} from "./can.js";
+import {Cans} from "./cans.js";
 
 export {
     Universe
 };
 
-function Universe(robby = new Robby(), fd = new Can()) {
+function Universe(robby = new Robby(), cans = new Cans()) {
     this.robot = robby;
-    this.food = fd;
+    this.cans = cans;
 }
 
-function tick(direction) {
-    this.snake.move(direction);
-    let head = this.snake.head();
-    var others = this.getAt(head);
-    others.forEach(other => this.snake.eat(other));
-    this.snake.trim();
-    this.food.age++;
-    if (this.food.age > 100) this.food.kill();
-    if (!this.food.isAlive) this.food = new Can();
+function tick() {
+    let position = this.robot.head();
+    let situation = this.cans.situationAt(position);
+    let action = this.robot.getAction(situation);
+    let result = action.perform(position, action, this.cans);
+    this.robot.apply(result);
     return this.getCells();
 }
 
 
 function getCells() {
-    return [this.snake.getCells(), this.food.getCells()].reduce((acc, cur) => acc.concat(cur), [])
-}
-
-function getAt(point) {
-    return point.equals(this.food.head()) ? [this.food] : [];
+    return [this.robot.getCells(), this.cans.getCells()].reduce((acc, cur) => acc.concat(cur), [])
 }
 
 Universe.prototype = {
     tick,
     getCells,
-    getAt
 };

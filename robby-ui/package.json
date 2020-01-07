@@ -17,7 +17,8 @@
   },
   "scripts": {
     "test": "mocha",
-    "postinstall": "rollup src/index.js --format umd --name deepsnake --output build/js/deepsnake.js; cp -r static/* build"
+    "postinstall": "rollup src/index.js --format umd --name deepsnake --output build/js/deepsnake.js; cp -r static/* build",
+    "build": "rollup src/index.js --format umd --name deepsnake --output build/js/deepsnake.js; cp -r static/* build"
   },
   "author": "George Mamaladze",
   "license": "MIT",

@@ -31,12 +31,24 @@ function overflow(size = this.size) {
     return new Point(this.x.mod(size.x), this.y.mod(size.y));
 }
 
+function isWall(point, size = this.size) {
+    let test = point.overflow();
+    return test.equals(point);
+}
+
+function getRandom(numberOfPoints) {
+    return new Array(numberOfPoints).fill(null).map(() => new Point());
+}
+
+
 Point.prototype = {
     equals,
     add,
     getHash,
+    isWall,
     distance,
     overflow,
+    getRandom,
     size: new Point(20, 20),
     rnd: function (max) {
         return Math.floor(Math.random() * max)

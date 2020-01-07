@@ -6,13 +6,14 @@ export const DIRECTIONS = {
     DOWN: new Point(0, 1),
     RIGHT: new Point(1, 0),
     LEFT: new Point(-1, 0),
+    CURRENT: new Point(0, 0),
 
     getAll: function () {
-        return [this.UP, this.RIGHT, this.DOWN, this.LEFT]
+        return [this.UP, this.RIGHT, this.DOWN, this.LEFT, this.CURRENT]
     },
 
     getRandom: function () {
-        let all = this.getAll();
+        let all = [this.UP, this.RIGHT, this.DOWN, this.LEFT];
         let rndIndex = Math.floor((Math.random() * all.length));
         return all[rndIndex];
     },
@@ -20,7 +21,6 @@ export const DIRECTIONS = {
     getFromTo: function (point1, point2) {
         let dx = point2.x - point1.x;
         let dy = point2.y - point1.y;
-        let direction = new Point(Math.sign(dx), Math.sign(dy));
-        return direction;
+        return new Point(Math.sign(dx), Math.sign(dy));
     }
 };
