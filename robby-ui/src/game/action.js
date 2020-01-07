@@ -45,5 +45,14 @@ export const ACTIONS = {
             'reward':   isWall ? -5 : 0,
             'position':    next
         };
-    }
+    },
+
+    byCode: [
+        this.moveNorth,
+        this.moveEast,
+        this.moveSouth,
+        this.moveWest,
+        this.stayPut,
+        this.pickUpCan,
+        this.moveRandom]
 };

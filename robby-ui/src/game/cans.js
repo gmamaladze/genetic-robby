@@ -1,6 +1,7 @@
 'use strict';
 import {Point} from "./point.js";
 import {DIRECTIONS} from "./directions.js";
+import {CONTENT} from "./content";
 
 export {Cans};
 
@@ -11,12 +12,19 @@ function Cans(numberOfCans) {
     }, {});
 }
 
-function situationAt(position) {
+function situationAt(point) {
     DIRECTIONS.getAll().map(function(direction) {
-        let cur = position.add(direction);
-        cur.isWall
-        return
+        let cur = point.add(direction);
+        return cur.isWall()
+            ? CONTENT.WALL
+            : hasCan(point)
+                ? CONTENT.CAN
+                : CONTENT.EMPTY;
     })
+}
+
+function hasCan(point) {
+    return this.positions.has(point);
 }
 
 function tryRemove(point) {
@@ -24,7 +32,7 @@ function tryRemove(point) {
 }
 
 function getCells() {
-    let being = this;
+    let being = "can";
     return this.positions.keys().map(function (point) {
         return {point, being}
     });
@@ -32,5 +40,6 @@ function getCells() {
 
 Cans.prototype = {
     tryRemove,
+    situationAt,
     getCells
 };

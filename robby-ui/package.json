@@ -17,13 +17,13 @@
   },
   "scripts": {
     "test": "mocha",
-    "postinstall": "rollup src/index.js --format umd --name deepsnake --output build/js/deepsnake.js; cp -r static/* build",
-    "build": "rollup src/index.js --format umd --name deepsnake --output build/js/deepsnake.js; cp -r static/* build"
+    "postinstall": "rollup src/index.js --format umd --name genetic-robby --output build/js/genetic-robby.js; cp -r static/* build",
+    "build": "rollup src/index.js --format umd --name genetic-robby --output build/js/genetic-robby.js; cp -r static/* build"
   },
   "author": "George Mamaladze",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gmamaladze/deep-snake"
+    "url": "https://github.com/gmamaladze/genetic-robby"
   }
 }

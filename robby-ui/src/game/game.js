@@ -24,18 +24,6 @@ function tick(input, draw = () => {}) {
     draw(cells);
 }
 
-const SNAKE_CODE = 100;
-const FOOD_CODE = -100;
-const UNKNOWN_CODE = 0;
-
-
-function encodeKind(being) {
-    if (Robby.prototype.isPrototypeOf(being)) return SNAKE_CODE;
-    if (Can.prototype.isPrototypeOf(being)) return FOOD_CODE;
-    return UNKNOWN_CODE;
-}
-
 Game.prototype = {
-    tick,
-    hint
+    tick
 };

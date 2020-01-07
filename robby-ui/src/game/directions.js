@@ -22,5 +22,12 @@ export const DIRECTIONS = {
         let dx = point2.x - point1.x;
         let dy = point2.y - point1.y;
         return new Point(Math.sign(dx), Math.sign(dy));
-    }
+    },
+
+    byCode: [
+        this.UP,
+        this.RIGHT,
+        this.DOWN,
+        this.LEFT,
+        this.CURRENT]
 };

@@ -2,14 +2,18 @@ body {
     font-family: sans-serif;
 }
 
-.snake {
+.robot {
     stroke: #E5E5E5;
     fill: #555;
 }
 
-.food {
+.can {
     stroke: #555;
     fill: black;
+}
+
+.trace {
+    border: 1px solid #E7E7E7;
 }
 
 .box {

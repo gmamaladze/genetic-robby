@@ -24,9 +24,6 @@
     <div class="box left" id="simulation">
         <span>some</span>
     </div>
-    <div class="box left" id="stats">
-        <span>learning PROGRESS.</span>
-    </div>
 </div>
 
 <div class="text">
@@ -46,7 +43,7 @@
 
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="js/deepsnake.js"></script>
+<script src="js/genetic-robby.js"></script>
 <script>
 
     const interval = 100;
@@ -62,24 +59,10 @@
         let grid = new deepsnake.Grid("#simulation").color(orange, green);
 
         function loop() {
-            let decision = game.hint();
-            game.tick(decision, function draw(cells) {
+            game.tick(function draw(cells) {
                 grid.draw(cells);
             });
             setTimeout(loop, interval);
-        }
-
-        loop();
-    })();
-
-    (function stats() {
-        let chart = new deepsnake.Chart("#stats", "loose", [240, 240], 50, 1);
-        let color = d3.scaleLinear().domain([0.15, 0.5]).interpolate(d3.interpolateHcl).range([green, orange, red]);
-
-        function loop() {
-            chart.push(brain.loss);
-            chart.color(color(chart.avg()));
-            setTimeout(loop, interval * 5);
         }
 
         loop();

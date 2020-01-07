@@ -13,11 +13,7 @@ function Universe(robby = new Robby(), cans = new Cans()) {
 }
 
 function tick() {
-    let position = this.robot.head();
-    let situation = this.cans.situationAt(position);
-    let action = this.robot.getAction(situation);
-    let result = action.perform(position, action, this.cans);
-    this.robot.apply(result);
+    this.robot.move(this.cans);
     return this.getCells();
 }
 

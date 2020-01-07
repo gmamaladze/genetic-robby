@@ -4,7 +4,7 @@ export {Grid};
 
 function Grid(element = 'body', pixel = 12, size = {x: 20, y: 20}) {
     /* global d3:true */
-    this._color = {snake: "silver", food: "green"};
+    this._color = {robot: "silver", can: "green", trace: "blue"};
     let grid = this;
     this.svg = d3.select(element)
         .append('svg')
@@ -19,10 +19,17 @@ function Grid(element = 'body', pixel = 12, size = {x: 20, y: 20}) {
     this.pixel = pixel;
 }
 
+const beingCode = {
+    "robot" : 0,
+    "trace" : 1,
+    "can"   : 2
+};
+
 function draw(cells) {
+
     var blocks = this.svg
         .selectAll("rect")
-        .data(cells, d => d.point.getHash() << 8 + encodeKind(d.being.kind));
+        .data(cells, d => d.point.getHash() << 8 + beingCode[d.being]);
 
     blocks.enter()
         .append('rect')
@@ -30,33 +37,13 @@ function draw(cells) {
         .attr('height', this.pixel)
         .attr('x', d => d.point.x * this.pixel)
         .attr('y', d => d.point.y * this.pixel)
-        .style('fill', d => this._color[d.being.kind])
+        .style('fill', d => this._color[d.being])
         .merge(blocks)
-        .attr('class', d => d.being.kind);
+        .attr('class', d => d.being);
 
     blocks.exit().remove();
 }
 
-const SNAKE_CODE = 1;
-const FOOD_CODE = 2;
-const UNKNOWN_CODE = 255;
-
-
-function encodeKind(kind) {
-    if (kind === "snake") return SNAKE_CODE;
-    if (kind === "food") return FOOD_CODE;
-    return UNKNOWN_CODE;
-}
-
-
-function color(snake, food) {
-    if (snake) this._color['snake'] = snake;
-    if (food) this._color['food'] = food;
-    return this;
-}
-
-
 Grid.prototype = {
-    draw,
-    color
+    draw
 };
