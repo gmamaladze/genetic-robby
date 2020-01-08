@@ -6,10 +6,8 @@ import {CONTENT} from "./content";
 export {Dna};
 
 function getRandomDna() {
-    let dnaLength = Math.pow(CONTENT.byCode.left, DIRECTIONS.byCode.length);
-    return new Array(dnaLength).fill(function () {
-        return Math.floor((Math.random() * ACTIONS.byCode.length));
-    });
+    let dnaLength = Math.pow(CONTENT.byCode.length, DIRECTIONS.byCode.length);
+    return new Array(dnaLength).fill(Math.floor((Math.random() * ACTIONS.byCode.length)));
 }
 
 function Dna(dnaArray = getRandomDna()) {

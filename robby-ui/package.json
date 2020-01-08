@@ -1,7 +1,7 @@
 {
-  "name": "deep-snake",
+  "name": "genetic-robby",
   "version": "1.0.0",
-  "description": "A snake game trained using simple deep learning implemented in client side javascript.",
+  "description": "Robby.",
   "main": "bundle.js",
   "directories": {
     "test": "test"
@@ -10,6 +10,7 @@
     "chai": "^4.0.2",
     "connect": "^3.6.2",
     "rollup": "^0.43.0",
+    "serve-favicon": "^2.5.0",
     "serve-static": "^1.12.3"
   },
   "devDependencies": {
@@ -17,8 +18,8 @@
   },
   "scripts": {
     "test": "mocha",
-    "postinstall": "rollup src/index.js --format umd --name genetic-robby --output build/js/genetic-robby.js; cp -r static/* build",
-    "build": "rollup src/index.js --format umd --name genetic-robby --output build/js/genetic-robby.js; cp -r static/* build"
+    "postinstall": "rollup src/index.js --format umd --name geneticrobby --output build/js/geneticrobby.js; cp -r static/* build",
+    "build": "rollup src/index.js --format umd --name geneticrobby --output build/js/geneticrobby.js; cp -r static/* build"
   },
   "author": "George Mamaladze",
   "license": "MIT",

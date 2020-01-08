@@ -3,21 +3,21 @@ body {
 }
 
 .robot {
-    stroke: #E5E5E5;
-    fill: #555;
+    fill: #AD343E;
 }
 
 .can {
-    stroke: #555;
-    fill: black;
+    fill: #F2AF29;
+    fill-opacity: 5%;
 }
 
 .trace {
-    border: 1px solid #E7E7E7;
+    fill: #DDDDDD;
+    fill-opacity: 5%;
 }
 
 .box {
-    border: 1px solid #E5E5E5;
+    border: 1px solid #555555;
 }
 
 .container {

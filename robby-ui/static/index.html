@@ -43,25 +43,23 @@
 
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="js/genetic-robby.js"></script>
+<script src="js/geneticrobby.js"></script>
 <script>
 
     const interval = 100;
-    const palette = d3.schemeCategory10;
-    const blue = palette[0];
-    const orange = palette[1];
-    const green = palette[2];
-    const red = palette[3];
-
 
     (function simulator() {
-        let game = new deepsnake.Game();
-        let grid = new deepsnake.Grid("#simulation").color(orange, green);
+        let game = new geneticrobby.Game();
+        let grid = new geneticrobby.Grid("#simulation");
 
         function loop() {
             game.tick(function draw(cells) {
                 grid.draw(cells);
             });
+            if (game.isOver()) {
+                game = new geneticrobby.Game();
+                grid = new geneticrobby.Grid("#simulation");
+            }
             setTimeout(loop, interval);
         }
 

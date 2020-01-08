@@ -46,13 +46,13 @@ export const ACTIONS = {
             'position':    next
         };
     },
-
-    byCode: [
-        this.moveNorth,
-        this.moveEast,
-        this.moveSouth,
-        this.moveWest,
-        this.stayPut,
-        this.pickUpCan,
-        this.moveRandom]
 };
+
+ACTIONS.byCode = [
+    ACTIONS.moveNorth,
+    ACTIONS.moveEast,
+    ACTIONS.moveSouth,
+    ACTIONS.moveWest,
+    ACTIONS.stayPut,
+    ACTIONS.pickUpCan,
+    ACTIONS.moveRandom];

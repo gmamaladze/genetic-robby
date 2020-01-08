@@ -3,6 +3,7 @@
 export const CONTENT = {
     EMPTY:  0,
     CAN:    1,
-    WALL:   2,
-    byCode: [this.EMPTY, this.CAN, this.WALL]
+    WALL:   2
 };
+
+CONTENT.byCode = [CONTENT.EMPTY, CONTENT.CAN, CONTENT.WALL];

@@ -2,29 +2,32 @@
 import {Point} from "./point.js";
 import {DIRECTIONS} from "./directions.js";
 import {CONTENT} from "./content";
+import {Cell} from "./cell";
 
 export {Cans};
 
-function Cans(numberOfCans) {
-    this.positions = Point.getRandom(numberOfCans).reduce(function(map, point) {
-        map[point] = point;
-        return map;
-    }, {});
+function Cans(numberOfCans=50) {
+    this.positions = new Map();
+    while(this.positions.size<numberOfCans) {
+        let randomPoint = new Point();
+        this.positions.set(randomPoint, true);
+    }
 }
 
 function situationAt(point) {
-    DIRECTIONS.getAll().map(function(direction) {
+    let cans = this;
+    return DIRECTIONS.getAll().map(function(direction) {
         let cur = point.add(direction);
         return cur.isWall()
             ? CONTENT.WALL
-            : hasCan(point)
+            : hasCan(cans, point)
                 ? CONTENT.CAN
                 : CONTENT.EMPTY;
     })
 }
 
-function hasCan(point) {
-    return this.positions.has(point);
+function hasCan(cans, point) {
+    return cans.positions.has(point);
 }
 
 function tryRemove(point) {
@@ -32,9 +35,8 @@ function tryRemove(point) {
 }
 
 function getCells() {
-    let being = "can";
-    return this.positions.keys().map(function (point) {
-        return {point, being}
+    return [...this.positions.keys()].map(function (point, ) {
+        return new Cell(point, "can");
     });
 }
 
