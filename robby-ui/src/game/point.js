@@ -2,20 +2,22 @@
 
 export {Point};
 
-function Point(x = this.rnd(this.size.x), y = this.rnd(this.size.y)) {
+function Point(x = 0, y = 0) {
     this.x = x;
     this.y = y;
+}
+
+function getHash() {
+    return this.size.x * this.x + this.y;
 }
 
 function equals(other) {
     if (!other) return;
     return other.x === this.x && other.y === this.y;
 }
+
 function add(point) {
-    let candidate = new Point(this.x + point.x, this.y + point.y);
-    return candidate.isWall()
-        ? point
-        : candidate;
+    return new Point(this.x + point.x, this.y + point.y);
 }
 
 function isWall(size = this.size) {
@@ -26,10 +28,8 @@ Point.prototype = {
     equals,
     add,
     isWall,
-    size: new Point(20, 20),
-    rnd: function (max) {
-        return Math.floor(Math.random() * max)
-    }
+    size: new Point(10, 10),
+    getHash
 };
 
 

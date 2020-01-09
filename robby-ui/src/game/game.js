@@ -2,19 +2,21 @@
 
 import {Universe} from "./universe.js";
 import {Point} from "./point.js";
+import {Robby} from "./robby";
 
 export {Game};
 
-function Game(size = new Point(10, 10), universe = new Universe(), numberOfMoves = 200) {
+function Game(dna, size = new Point(10, 10), numberOfMoves = 200) {
     this.size = size;
     this.maxMoveCount = numberOfMoves;
     this.moveCount = 0;
     Point.prototype.size = size;
-    this.universe = universe;
+    this.universe = new Universe(new Robby(new Point(), dna));
     return this;
 }
 
-function tick(draw = () => {}) {
+function tick(draw = () => {
+}) {
     if (this.isOver()) {
         throw "Game over"
     }
@@ -23,11 +25,21 @@ function tick(draw = () => {}) {
     this.moveCount++;
 }
 
+function moves() {
+    return this.moveCount;
+}
+
+function score() {
+    return this.universe.score();
+}
+
 function isOver() {
     return this.moveCount > this.maxMoveCount;
 }
 
 Game.prototype = {
     tick,
-    isOver
+    isOver,
+    moves,
+    score
 };

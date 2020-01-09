@@ -3,17 +3,19 @@ body {
 }
 
 .robot {
+    stroke: silver;
     fill: #AD343E;
 }
 
 .can {
-    fill: #F2AF29;
-    fill-opacity: 5%;
+    stroke: silver;
+    fill: #8BC34A;
+    fill-opacity: 100%;
 }
 
 .trace {
-    fill: #DDDDDD;
-    fill-opacity: 5%;
+    fill: #3F51B5;
+    fill-opacity: 15%;
 }
 
 .box {

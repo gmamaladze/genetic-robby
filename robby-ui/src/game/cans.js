@@ -2,21 +2,26 @@
 import {Point} from "./point.js";
 import {DIRECTIONS} from "./directions.js";
 import {CONTENT} from "./content";
-import {Cell} from "./cell";
 
 export {Cans};
 
 function Cans(numberOfCans=50) {
+    let width = Point.prototype.size.x;
+    let height = Point.prototype.size.y;
+    let totalCells = width * height;
+    let probability = numberOfCans / totalCells;
     this.positions = new Map();
-    while(this.positions.size<numberOfCans) {
-        let randomPoint = new Point();
-        this.positions.set(randomPoint, true);
+    for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+            if (Math.random() > probability) continue;
+            placeCan(this, new Point(i, j));
+        }
     }
 }
 
 function situationAt(point) {
     let cans = this;
-    return DIRECTIONS.getAll().map(function(direction) {
+    return DIRECTIONS.getAll().map(function (direction) {
         let cur = point.add(direction);
         return cur.isWall()
             ? CONTENT.WALL
@@ -26,22 +31,26 @@ function situationAt(point) {
     })
 }
 
+function placeCan(cans, point) {
+    let canPlace = !hasCan(cans, point);
+    if (!canPlace) return false;
+    cans.positions.set(point.getHash(), point);
+}
+
 function hasCan(cans, point) {
-    return cans.positions.has(point);
+    return cans.positions.has(point.getHash());
 }
 
 function tryRemove(point) {
-    return this.positions.delete(point);
+    return this.positions.delete(point.getHash());
 }
 
-function getCells() {
-    return [...this.positions.keys()].map(function (point, ) {
-        return new Cell(point, "can");
-    });
+function cans() {
+    return [...this.positions.values()];
 }
 
 Cans.prototype = {
     tryRemove,
     situationAt,
-    getCells
+    cans
 };

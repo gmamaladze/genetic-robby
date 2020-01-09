@@ -11,7 +11,7 @@ function getRandomDna() {
 }
 
 function Dna(dnaArray = getRandomDna()) {
-    this._dna = dnaArray;
+    this._dna = (dnaArray == null) ? getRandomDna() : dnaArray;
     return this;
 }
 

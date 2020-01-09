@@ -17,9 +17,7 @@ function Cell(point = new Point(0, 0), being = "") {
 }
 
 function getId() {
-    return this.being === BEING.Robot
-        ? BEING.Robot
-        : BEING.None + this.x + this.y;
+    return this.being + this.x + this.y;
 }
 
 Cell.prototype = {

@@ -22,7 +22,7 @@
 
 <div class="container">
     <div class="box left" id="simulation">
-        <span>some</span>
+        <span id="title"> </span>
     </div>
 </div>
 
@@ -46,19 +46,30 @@
 <script src="js/geneticrobby.js"></script>
 <script>
 
-    const interval = 100;
+    const interval = 50;
+    let url = '/gen-3000.json';
+    let dna = null;
+
+    fetch(url)
+        .then(res => res.json())
+        .then((out) => {
+            dna = out.bestSurvivor.dna;
+        })
+        .catch(err => {
+            throw err
+        });
 
     (function simulator() {
         let game = new geneticrobby.Game();
-        let grid = new geneticrobby.Grid("#simulation");
+        let grid = new geneticrobby.Grid("#simulation", "#title");
 
         function loop() {
             game.tick(function draw(cells) {
-                grid.draw(cells);
+                let text = `moves: ${game.moves()} | score: ${game.score()}`;
+                grid.draw(cells, text);
             });
             if (game.isOver()) {
-                game = new geneticrobby.Game();
-                grid = new geneticrobby.Grid("#simulation");
+                game = new geneticrobby.Game(dna);
             }
             setTimeout(loop, interval);
         }

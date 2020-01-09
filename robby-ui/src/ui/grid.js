@@ -2,8 +2,9 @@
 
 export {Grid};
 
-function Grid(element = 'body', pixel = 22, size = {x: 10, y: 10}) {
+function Grid(element = 'body', title = '#title', pixel = 22, size = {x: 10, y: 10}) {
     /* global d3:true */
+    this.title = title;
     let grid = this;
     this.svg = d3.select(element)
         .append('svg')
@@ -18,7 +19,9 @@ function Grid(element = 'body', pixel = 22, size = {x: 10, y: 10}) {
     this.pixel = pixel;
 }
 
-function draw(cells) {
+function draw(cells, text) {
+    d3.select(this.title)
+        .text(text);
 
     let blocks = this.svg
         .selectAll("rect")

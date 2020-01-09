@@ -2,15 +2,14 @@
 import {Point} from "./point.js";
 import {Dna} from "./dna.js";
 import {ACTIONS} from "./action";
-import {Cell} from "./cell";
 
 export {Robby};
 
-function Robby(position = new Point(0, 0), dna = new Dna()) {
+function Robby(position = new Point(0, 0), dnaArray) {
     this._head = position;
     this._trace = [];
     this._score = 0;
-    this._dna = dna;
+    this._dna = new Dna(dnaArray);
     return this;
 }
 
@@ -18,20 +17,27 @@ function move(cans) {
     let situation = cans.situationAt(this._head);
     let action = this._dna.getAction(situation);
     let result = ACTIONS.perform(this._head, action, cans);
-    this._score+=result.reward;
-    this._head=result.position;
+    this._score += result.reward;
+    this._head = result.position;
     this._trace.unshift(this._head);
     return this;
 }
 
-function getCells() {
-    return [new Cell(point, "robot")].concat(this._trace.map(function (point) {
-        return new Cell(point, "trace");
-    }));
+function trace() {
+    return this._trace;
+}
+
+function head() {
+    return this._head;
+}
+
+function score() {
+    return this._score;
 }
 
 Robby.prototype = {
     move,
-    getCells,
-    traceLength: 10
+    trace,
+    head,
+    score
 };

@@ -40,11 +40,17 @@ export const ACTIONS = {
 
     move: function(point, direction) {
         let next = point.add(direction);
-        let isWall = next.equals(point);
-        return {
-            'reward':   isWall ? -5 : 0,
-            'position':    next
-        };
+        let isWall = next.isWall();
+
+        return isWall
+            ? {
+                'reward': -5,
+                'position': point
+            }
+            : {
+                'reward': 0,
+                'position': next
+            }
     },
 };
 

@@ -17,12 +17,6 @@ export const DIRECTIONS = {
         let rndIndex = Math.floor((Math.random() * all.length));
         return all[rndIndex];
     },
-
-    getFromTo: function (point1, point2) {
-        let dx = point2.x - point1.x;
-        let dy = point2.y - point1.y;
-        return new Point(Math.sign(dx), Math.sign(dy));
-    },
 };
 
 DIRECTIONS.byCode = [
