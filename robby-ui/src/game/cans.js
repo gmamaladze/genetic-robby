@@ -14,31 +14,35 @@ function Cans(numberOfCans=50) {
     for (let i = 0; i < width; i++) {
         for (let j = 0; j < height; j++) {
             if (Math.random() > probability) continue;
-            placeCan(this, new Point(i, j));
+            this.placeCan(new Point(i, j));
         }
     }
 }
 
 function situationAt(point) {
     let cans = this;
-    return DIRECTIONS.getAll().map(function (direction) {
+    let situation = new Array(DIRECTIONS.byCode.length);
+    for (let i = 0; i < situation.length; i++) {
+        let direction = DIRECTIONS.byCode[i];
         let cur = point.add(direction);
-        return cur.isWall()
+        situation[i] = cur.isWall()
             ? CONTENT.WALL
-            : hasCan(cans, point)
+            //NOTE: do not inline cas with this
+            : cans.hasCan(point)
                 ? CONTENT.CAN
                 : CONTENT.EMPTY;
-    })
+    }
+    return situation;
 }
 
-function placeCan(cans, point) {
-    let canPlace = !hasCan(cans, point);
+function placeCan(point) {
+    let canPlace = !this.hasCan(point);
     if (!canPlace) return false;
-    cans.positions.set(point.getHash(), point);
+    this.positions.set(point.getHash(), point);
 }
 
-function hasCan(cans, point) {
-    return cans.positions.has(point.getHash());
+function hasCan(point) {
+    return this.positions.has(point.getHash());
 }
 
 function tryRemove(point) {
@@ -52,5 +56,7 @@ function cans() {
 Cans.prototype = {
     tryRemove,
     situationAt,
+    hasCan,
+    placeCan,
     cans
 };

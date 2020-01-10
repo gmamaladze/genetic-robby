@@ -38,17 +38,17 @@ class TestX {
                             : Offset.EAST.from(current);
                 }
             }
-            if (i!=10-1) {
+            if (i != 10 - 1) {
                 fifo.add(Action.MoveSouth);
                 current = Offset.SOUTH.from(current);
             }
         }
 
-        DNA fakeDna = mock(DNA.class);
-        when(fakeDna.getAction(any(Situation.class)))
+        Genome fakeGenome = mock(Genome.class);
+        when(fakeGenome.getAction(any(Situation.class)))
                 .thenAnswer((Answer<Action>) invocationOnMock -> fifo.remove());
 
-        Robby robby = new Robby(fakeDna);
+        Robby robby = new Robby(fakeGenome);
         int moveCount = fifo.size();
         for (int i = 0; i < moveCount; i++) {
             ActionResult position = robby.move(board);
@@ -60,16 +60,16 @@ class TestX {
 
     @Test
     void actionsAreEvenlyDistributedInARandomDNA() {
-        DNA dna = DNA.getRandom();
+        Genome genome = Genome.getRandom();
 
-        double average = (double) DNA.length / Action.values().length;
+        double average = (double) Genome.length / Action.values().length;
 
         OptionalDouble deviation = IntStream
-                .range(0, DNA.length)
+                .range(0, Genome.length)
                 .mapToObj(Situation::new)
                 .collect(Collectors.groupingBy(
-                        dna::getAction,
-                            Collectors.counting()))
+                        genome::getAction,
+                        Collectors.counting()))
                 .values().stream()
                 .mapToDouble(aLong -> aLong)
                 .map(a -> Math.abs(a-average) / average)
@@ -81,17 +81,17 @@ class TestX {
 
     @Test
     void actionsAreEvenlyDistributedAfterCrossbreeding() {
-        DNA c = DNA.getRandom();
+        Genome c = Genome.getRandom();
 
         for (int i = 0; i < 100; i++) {
-            DNA b = DNA.getRandom();
-            c = DNA.crossbreed(c, b, 0.1);
+            Genome b = Genome.getRandom();
+            c = Genome.crossbreed(c, b, 0.1);
         }
 
-        double average = (double) DNA.length / Action.values().length;
+        double average = (double) Genome.length / Action.values().length;
 
         OptionalDouble deviation = IntStream
-                .range(0, DNA.length)
+                .range(0, Genome.length)
                 .mapToObj(Situation::new)
                 .collect(Collectors.groupingBy(
                         c::getAction,
@@ -125,16 +125,16 @@ class TestX {
     }
 
 
-    @Test
+/*    @Test
     void testMutation() {
         int diffCounter = 0;
         final int cycles = 100;
         double mutationProbability = 0.00823;
 
         for (int i = 0; i < cycles; i++) {
-            DNA a = DNA.getRandom();
-            DNA b = DNA.mutate(a, mutationProbability);
-            for (int j = 0; j < DNA.length; j++) {
+            Genome a = Genome.getRandom();
+            Genome b = Genome.mutate(a, mutationProbability);
+            for (int j = 0; j < Genome.length; j++) {
                 Situation situation = new Situation(j);
                 Action aAction = a.getAction(situation);
                 Action bAction = b.getAction(situation);
@@ -142,25 +142,16 @@ class TestX {
             }
         }
 
-        double mutationRate = (double) diffCounter / (cycles * DNA.length);
+        double mutationRate = (double) diffCounter / (cycles * Genome.length);
         double deviation = 1 - Math.abs(mutationRate - mutationProbability / mutationProbability);
         assertTrue(deviation < 0.01);
-    }
+    }*/
 
     @Test
     void deserializeDNA() throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
-        DNA dna = DNA.getRandom();
-        String json = om.writeValueAsString(dna);
-        System.out.println(json);
-    }
-
-    @Test
-    void deserializeGenerationResult() throws JsonProcessingException {
-        ObjectMapper om = new ObjectMapper();
-        DNA[] survivors = IntStream.range(0, 10).mapToObj(i -> DNA.getRandom()).toArray(DNA[]::new);
-        GenResult genResult = new GenResult(42, 0.5, 0.3, survivors);
-        String json = om.writeValueAsString(genResult);
+        Genome genome = Genome.getRandom();
+        String json = om.writeValueAsString(genome);
         System.out.println(json);
     }
 }

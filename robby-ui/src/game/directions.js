@@ -2,26 +2,23 @@
 import {Point} from "./point.js";
 
 export const DIRECTIONS = {
-    UP: new Point(0, -1),
-    DOWN: new Point(0, 1),
-    RIGHT: new Point(1, 0),
-    LEFT: new Point(-1, 0),
-    CURRENT: new Point(0, 0),
-
-    getAll: function () {
-        return [this.UP, this.RIGHT, this.DOWN, this.LEFT, this.CURRENT]
-    },
+    North: new Point(0, -1),
+    South: new Point(0, 1),
+    East: new Point(1, 0),
+    West: new Point(-1, 0),
+    Current: new Point(0, 0),
 
     getRandom: function () {
-        let all = [this.UP, this.RIGHT, this.DOWN, this.LEFT];
-        let rndIndex = Math.floor((Math.random() * all.length));
-        return all[rndIndex];
-    },
+        let rndIndex = Math.floor(Math.random() * DIRECTIONS.woCurrent.length);
+        return DIRECTIONS.woCurrent[rndIndex];
+    }
 };
 
+DIRECTIONS.woCurrent = [DIRECTIONS.North, DIRECTIONS.South, DIRECTIONS.East, DIRECTIONS.West];
+
 DIRECTIONS.byCode = [
-    DIRECTIONS.UP,
-    DIRECTIONS.RIGHT,
-    DIRECTIONS.DOWN,
-    DIRECTIONS.LEFT,
-    DIRECTIONS.CURRENT];
+    DIRECTIONS.North,
+    DIRECTIONS.South,
+    DIRECTIONS.East,
+    DIRECTIONS.West,
+    DIRECTIONS.Current];

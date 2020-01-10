@@ -7,8 +7,8 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY )
-public class DNA {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public class Genome {
 
     public static final int length = (int) Math.pow(Content.values().length, Offset.values().length);
     public static final Random random = new Random(System.currentTimeMillis());
@@ -19,31 +19,22 @@ public class DNA {
     private final int[] dna;
 
     @JsonCreator
-    DNA(@JsonProperty("id") long uniqueId,
-        @JsonProperty("dna") int[] dna) {
+    Genome(@JsonProperty("id") long uniqueId,
+           @JsonProperty("dna") int[] dna) {
         this.uniqueId = uniqueId;
         this.dna = dna;
     }
 
-    public static DNA getRandom() {
-        int[] dna = IntStream.range(0, length).map( i -> DNA.getRandomAction()).toArray();
+    public static Genome getRandom() {
+        int[] dna = IntStream.range(0, length).map(i -> Genome.getRandomAction()).toArray();
         long uniqueId = uniqueCounter.incrementAndGet();
-        return new DNA(uniqueId, dna);
-    }
-
-    public static DNA mutate(DNA dna, double mutationProbability) {
-        dna = dna.clone();
-        double[] chance = random.doubles(length).toArray();
-        for (int i=0; i<length; i++) {
-            boolean doMutate = chance[i] <= mutationProbability;
-            dna.dna[i] = doMutate ? getRandomAction(dna.dna[i]) : dna.dna[i];
-        }
-        return dna;
+        return new Genome(uniqueId, dna);
     }
 
     private static int getRandomAction() {
         return getRandomAction(-1);
     }
+
     private static int getRandomAction(int differentFrom) {
         int candidate;
         do {
@@ -52,20 +43,34 @@ public class DNA {
         return candidate;
     }
 
-    public static DNA crossbreed(DNA a, DNA b, double mutationProbability) {
-        double[] chance = random.doubles(length).toArray();
-        DNA merged = merge(a, b, chance);
-        merged = DNA.mutate(merged, mutationProbability);
-        return merged;
+    public static Genome crossbreed(Genome a, Genome b, double mutationProbability) {
+        int[] merged = merge(a, b);
+        mutate(merged, mutationProbability);
+        return new Genome(uniqueCounter.incrementAndGet(), merged);
     }
 
-    public static DNA merge(DNA a, DNA b, double[] chance) {
-        var c = new int[length];
-        for (int i=0; i<length; i++) {
-            c[i] = chance[i]>0.5 ? a.dna[i] : b.dna[i];
+    private static void mutate(int[] merged, double mutationProbability) {
+        int mutationCount = (int) Math.round(length * mutationProbability);
+        for (int i = 0; i < mutationCount; i++) {
+            int mutationIndex = random.nextInt(length);
+            merged[mutationIndex] = getRandomAction(merged[i]);
         }
-        long uniqueId = uniqueCounter.incrementAndGet();
-        return new DNA(uniqueId, c);
+    }
+
+    private static int[] merge(Genome a, Genome b) {
+        int[] merged = new int[length];
+        final int maxSegmentSize = length / 3;
+        final int minSegmentSize = length / 5;
+        int nextIndex = 0;
+        var current = a.dna;
+        for (int i = 0; i < length; i++) {
+            if (i == nextIndex) {
+                nextIndex = i + minSegmentSize + random.nextInt(maxSegmentSize - minSegmentSize);
+                current = current == a.dna ? b.dna : a.dna;
+            }
+            merged[i] = current[i];
+        }
+        return merged;
     }
 
     public Action getAction(Situation situation) {
@@ -83,15 +88,15 @@ public class DNA {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        DNA dna = (DNA) obj;
-        return dna.uniqueId == this.uniqueId;
+        Genome genome = (Genome) obj;
+        return genome.uniqueId == this.uniqueId;
     }
 
     @SuppressWarnings({"CloneDoesntDeclareCloneNotSupportedException", "MethodDoesntCallSuperMethod"})
     @Override
-    protected DNA clone() {
+    protected Genome clone() {
         long uniqueId = uniqueCounter.incrementAndGet();
-        return new DNA(uniqueId, this.dna.clone());
+        return new Genome(uniqueId, this.dna.clone());
     }
 
     @Override

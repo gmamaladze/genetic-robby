@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.SequenceWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class ResultWriter implements AutoCloseable {
 
@@ -19,21 +23,28 @@ public class ResultWriter implements AutoCloseable {
         seqWriter = mapper.writer().writeValuesAsArray(fileWriter);
     }
 
-    public void write(GenResult genResult) throws IOException {
-        writeSummary(genResult);
-        writeFull(genResult);
+    public void write(GenerationResult generationResult) throws IOException {
+        writeSummary(generationResult);
+        writeFull(generationResult);
     }
 
-    private void writeFull(GenResult genResult) throws IOException {
-        String fileName = String.format(this.dirName + "/gen-%04d.json", genResult.getGenerationId());
-        this.mapper.writeValue(new File(fileName), genResult);
+    private void writeFull(GenerationResult generationResult) throws IOException {
+        if (generationResult.getGenerationId() % 100 != 0) return;
+
+        String fileName = this.dirName + "/gen-latest.json";
+        File genFile = new File(fileName);
+        this.mapper.writeValue(genFile, generationResult);
+
+        String fileNameLatest = String.format(this.dirName + "/gen-%06d.json", generationResult.getGenerationId());
+        Path from = genFile.toPath();
+        Path to = Paths.get(fileNameLatest);
+        Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
     }
 
-    private void writeSummary(GenResult genResult) throws IOException {
+    private void writeSummary(GenerationResult generationResult) throws IOException {
         SummaryEntry summaryEntry = new SummaryEntry(
-                genResult.getGenerationId(),
-                genResult.getMaxScore(),
-                genResult.getAvgScore());
+                generationResult.getGenerationId(),
+                generationResult.getAvgScore());
         this.seqWriter.write(summaryEntry);
     }
 
@@ -45,13 +56,11 @@ public class ResultWriter implements AutoCloseable {
     static class SummaryEntry {
 
         public final long generationId;
-        public final double maxScore;
         public final double avgScore;
 
-        public SummaryEntry(long generationId, double maxScore, double avgScore) {
+        public SummaryEntry(long generationId, double avgScore) {
 
             this.generationId = generationId;
-            this.maxScore = maxScore;
             this.avgScore = avgScore;
         }
     }

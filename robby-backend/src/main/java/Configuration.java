@@ -6,15 +6,17 @@ import java.io.IOException;
 public class Configuration {
 
     private double mutationProbability = 0.009;
-    private double survivorQuota = 0.05;
+    private double survivorQuota = 0.2;
+    private double genPoolQuota = 0.8;
     private int populationSize = 200;
-    private long numberOfBoards = 500;
+    private long numberOfBoards = 100;
+    private double newBoardQuota = 0.05;
     private int boardWidth = 10;
     private int boardHeight = 10;
     private int numberOfCans = 50;
     private int numberOfMoves = 200;
-    private long numberOfGenerations = 3000;
-    private int numberOfThreads = 16;
+    private long numberOfGenerations = 100000;
+    private int numberOfThreads = 4;
     private boolean debug = false;
 
     public static Configuration getDefault() {
@@ -134,5 +136,21 @@ public class Configuration {
     public void setDebug(boolean debug) {
 
         this.debug = debug;
+    }
+
+    public double getGenPoolQuota() {
+        return genPoolQuota;
+    }
+
+    public void setGenPoolQuota(double genPoolQuota) {
+        this.genPoolQuota = genPoolQuota;
+    }
+
+    public double getNewBoardQuota() {
+        return newBoardQuota;
+    }
+
+    public void setNewBoardQuota(double newBoardQuota) {
+        this.newBoardQuota = newBoardQuota;
     }
 }

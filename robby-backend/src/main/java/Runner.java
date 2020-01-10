@@ -8,78 +8,94 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.Collections.reverseOrder;
-
 public class Runner {
 
 	private final ExecutorService executor;
+	private final RankSelector rankSelector;
 	private Configuration configuration;
 	private ResultWriter writer;
 
 	public Runner(Configuration configuration) {
 		this.executor = Executors.newFixedThreadPool(configuration.getNumberOfThreads());
 		this.configuration = configuration;
+		int genPoolSize = (int) Math.round(configuration.getPopulationSize() * configuration.getGenPoolQuota());
+		this.rankSelector = new RankSelector(genPoolSize);
 	}
 
 	public void runCivilization(ResultWriter writer) throws InterruptedException, IOException {
 		this.writer = writer;
 
-		DNA[] population = Stream
-			.generate(DNA::getRandom)
-			.limit(configuration.getPopulationSize())
-			.toArray(DNA[]::new);
+		Genome[] population = Stream
+				.generate(Genome::getRandom)
+				.limit(configuration.getPopulationSize())
+				.toArray(Genome[]::new);
 
-		for(long generationId = 0; generationId< configuration.getNumberOfGenerations(); generationId++) {
+		Queue<Board> environments = new LinkedList<>();
 
-			Board[] boardBlueprints = getBoardBlueprints();
+		for (long generationId = 0; generationId < configuration.getNumberOfGenerations(); generationId++) {
 
-			GenResult result = runGeneration(
+			for (int i = 0; i < configuration.getNumberOfBoards() * configuration.getNewBoardQuota(); i++) {
+				if (environments.poll() == null) break;
+			}
+
+			while (environments.size() < configuration.getNumberOfBoards()) {
+				environments.add(
+						Board.getRandom(
+								configuration.getBoardWidth(),
+								configuration.getBoardHeight(),
+								configuration.getNumberOfCans()));
+			}
+
+			Board[] boardBlueprints = environments.toArray(Board[]::new);
+			GenerationResult result = runGeneration(
 					generationId,
 					boardBlueprints,
 					population,
 					executor);
 
 			save(result);
-
-			int descendantCount = configuration.getPopulationSize() - result.getSurvivors().length;
-			int pairsCount = result.getSurvivors().length / 2;
-
-			Stream<DNA> descendants = IntStream
-					.range(0, descendantCount)
-					.map(descendantIndex -> descendantIndex % pairsCount)
-					.mapToObj(pairIndex -> DNA.crossbreed(
-							result.getSurvivors()[pairIndex],
-							result.getSurvivors()[pairsCount + pairIndex],
-							configuration.getMutationProbability()))
-					;
-
-			population = Stream.concat(
-					Arrays.stream(result.getSurvivors()),
-					descendants)
-				.toArray(DNA[]::new);
+			Genome[] pool = Arrays.stream(result.getGenomeResults())
+					.map(GenomeResult::getGenome)
+					.toArray(Genome[]::new);
+			population = createNewPopulation(pool);
 		}
 	}
 
-	private Board[] getBoardBlueprints() {
-		return Stream
-				.generate(() -> Board.getRandom(configuration.getBoardWidth(), configuration.getBoardHeight(), configuration.getNumberOfCans()))
-				.limit(configuration.getNumberOfBoards())
-				.toArray(Board[]::new);
+	private Genome[] createNewPopulation(Genome[] pool) {
+		int size = configuration.getPopulationSize();
+		int survivorCount = (int) Math.round(size * configuration.getSurvivorQuota());
+		int descendantsCount = size - survivorCount;
+		int ancestorsCount = this.rankSelector.getSize();
+
+		Stream<Genome> survivors = Arrays.stream(pool, size - survivorCount, size);
+		Genome[] ancestors = Arrays.stream(pool, size - ancestorsCount, size).toArray(Genome[]::new);
+
+		Stream<Genome> descendants = IntStream
+				.range(0, descendantsCount)
+				.mapToObj(i -> {
+					int indexA = this.rankSelector.getRandomIndex();
+					Genome a = ancestors[indexA];
+					int indexB = this.rankSelector.getRandomIndex();
+					Genome b = ancestors[indexB];
+					return Genome.crossbreed(a, b, configuration.getMutationProbability());
+				});
+
+		return Stream.concat(survivors, descendants).toArray(Genome[]::new);
 	}
 
-	private GenResult runGeneration(long generationId, Board[] boardBlueprints, DNA[] strategies, ExecutorService executor) throws InterruptedException {
-		List<Callable<LifeResult>> lives = new ArrayList<>(boardBlueprints.length * strategies.length);
+
+	private GenerationResult runGeneration(long generationId, Board[] boardBlueprints, Genome[] strategies, ExecutorService executor) throws InterruptedException {
+		List<Callable<SessionResult>> sessions = new ArrayList<>(boardBlueprints.length * strategies.length);
 		for (Board boardBlueprint : boardBlueprints) {
-			for (DNA DNA : strategies) {
+			for (Genome Genome : strategies) {
 				Board board = boardBlueprint.clone();
-				Robby robot = new Robby(DNA);
-				lives.add(() -> liveOne(board, robot));
+				Robby robot = new Robby(Genome);
+				sessions.add(() -> runSession(board, robot));
 			}
 		}
 
-		int survivorCount = (int) Math.round(strategies.length * configuration.getSurvivorQuota());
-		LinkedHashMap<DNA, Double> scoredSurvivors = executor
-				.invokeAll(lives)
+		GenomeResult[] scoredGenomes = executor
+				.invokeAll(sessions)
 				.stream()
 				.map(future -> {
 					try {
@@ -91,42 +107,29 @@ public class Runner {
 				})
 				.collect(
 						Collectors.groupingBy(
-								LifeResult::getDNA,
-								Collectors.averagingDouble(LifeResult::getScore)))
+								SessionResult::getGenome,
+								Collectors.averagingDouble(SessionResult::getScore)))
 				.entrySet()
 				.stream()
-				.sorted(reverseOrder(Map.Entry.comparingByValue()))
-				.limit(survivorCount)
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+				.sorted(Map.Entry.comparingByValue())
+				.map(e -> new GenomeResult(e.getKey(), e.getValue() / configuration.getNumberOfBoards()))
+				.toArray(GenomeResult[]::new);
 
-		Double[] scores = scoredSurvivors.values().toArray(Double[]::new);
-
-		DNA[] survivors = scoredSurvivors.keySet().toArray(DNA[]::new);
-		double maxScore =
-				Arrays.stream(scores).mapToDouble(d -> d)
-						.max()
-						.orElse(Double.NaN);
-
-		double avgScore =
-				Arrays.stream(scores).mapToDouble(d -> d)
-						.average()
-						.orElse(Double.NaN);
-
-		return new GenResult(generationId, maxScore, avgScore, survivors);
+		return new GenerationResult(generationId, scoredGenomes);
 	}
 
-	private void save(GenResult genResult) throws IOException {
+	private void save(GenerationResult generationResult) throws IOException {
 
-		System.out.println(genResult);
-		writer.write(genResult);
+		System.out.println(generationResult);
+		writer.write(generationResult);
 	}
 
-	private LifeResult liveOne(Board board, Robby robot) {
+	private SessionResult runSession(Board board, Robby robot) {
 		for (int moveCount = 0; moveCount < this.configuration.getNumberOfMoves(); moveCount++) {
 			robot.move(board);
 		}
-		return new LifeResult(
-				robot.getDNA(),
+		return new SessionResult(
+				robot.getGenome(),
 				robot.getPointCount()
 		);
 	}

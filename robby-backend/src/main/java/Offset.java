@@ -5,22 +5,22 @@ public enum Offset {
             return new Position(position.x, position.y - 1);
         }
     },
+    SOUTH {
+        @Override
+        public Position from(Position position) {
+            return new Position(position.x, position.y + 1);
+        }
+    },
     EAST {
         @Override
         public Position from(Position position) {
             return new Position(position.x + 1, position.y);
         }
     },
-    SOUTH {
-        @Override
-        public Position from(Position position) {
-            return new Position(position.x, position.y+1);
-        }
-    },
     WEST {
         @Override
         public Position from(Position position) {
-            return new Position(position.x-1, position.y);
+            return new Position(position.x - 1, position.y);
         }
     },
     CURRENT {

@@ -2,24 +2,24 @@
 import {DIRECTIONS} from "./directions.js";
 
 export const ACTIONS = {
-    moveNorth:  0,
-    moveEast :  1,
-    moveSouth:  2,
-    moveWest:   3,
-    stayPut:    4,
-    pickUpCan:  5,
+    moveNorth: 0,
+    moveSouth: 1,
+    moveEast: 2,
+    moveWest: 3,
+    stayPut: 4,
+    pickUpCan: 5,
     moveRandom: 6,
 
     perform: function (point, action, cans) {
         switch (action) {
             case this.moveNorth:
-                return this.move(point, DIRECTIONS.UP);
+                return this.move(point, DIRECTIONS.North);
             case this.moveEast:
-                return this.move(point, DIRECTIONS.RIGHT);
+                return this.move(point, DIRECTIONS.East);
             case this.moveSouth:
-                return this.move(point, DIRECTIONS.DOWN);
+                return this.move(point, DIRECTIONS.South);
             case this.moveWest:
-                return this.move(point, DIRECTIONS.LEFT);
+                return this.move(point, DIRECTIONS.West);
             case this.stayPut:
                 return {
                     'reward': 0,
@@ -54,11 +54,11 @@ export const ACTIONS = {
     },
 };
 
-ACTIONS.byCode = [
-    ACTIONS.moveNorth,
-    ACTIONS.moveEast,
-    ACTIONS.moveSouth,
-    ACTIONS.moveWest,
-    ACTIONS.stayPut,
-    ACTIONS.pickUpCan,
-    ACTIONS.moveRandom];
+ACTIONS.byCode = [];
+ACTIONS.byCode[ACTIONS.moveNorth] = ACTIONS.moveNorth;
+ACTIONS.byCode[ACTIONS.moveSouth] = ACTIONS.moveSouth;
+ACTIONS.byCode[ACTIONS.moveEast] = ACTIONS.moveEast;
+ACTIONS.byCode[ACTIONS.moveWest] = ACTIONS.moveWest;
+ACTIONS.byCode[ACTIONS.stayPut] = ACTIONS.stayPut;
+ACTIONS.byCode[ACTIONS.pickUpCan] = ACTIONS.pickUpCan;
+ACTIONS.byCode[ACTIONS.moveRandom] = ACTIONS.moveRandom;

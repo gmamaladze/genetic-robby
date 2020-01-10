@@ -2,7 +2,7 @@
 
 export {Grid};
 
-function Grid(element = 'body', title = '#title', pixel = 22, size = {x: 10, y: 10}) {
+function Grid(element = 'body', title = '#title', pixel = 28, size = {x: 10, y: 10}) {
     /* global d3:true */
     this.title = title;
     let grid = this;

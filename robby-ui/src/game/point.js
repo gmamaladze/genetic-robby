@@ -11,11 +11,6 @@ function getHash() {
     return this.size.x * this.x + this.y;
 }
 
-function equals(other) {
-    if (!other) return;
-    return other.x === this.x && other.y === this.y;
-}
-
 function add(point) {
     return new Point(this.x + point.x, this.y + point.y);
 }
@@ -25,15 +20,9 @@ function isWall(size = this.size) {
 }
 
 Point.prototype = {
-    equals,
     add,
     isWall,
     size: new Point(10, 10),
     getHash
-};
-
-
-Number.prototype.mod = function (n) {
-    return ((this % n) + n) % n;
 };
 

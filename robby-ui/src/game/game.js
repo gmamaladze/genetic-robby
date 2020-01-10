@@ -3,15 +3,19 @@
 import {Universe} from "./universe.js";
 import {Point} from "./point.js";
 import {Robby} from "./robby";
+import {Cans} from "./cans";
 
 export {Game};
 
-function Game(dna, size = new Point(10, 10), numberOfMoves = 200) {
-    this.size = size;
+function Game(dnaArray, width = 10, height = 10, numberOfCans = 50, numberOfMoves = 200) {
+    this.size = new Point(width, height);
+    Point.prototype.size = this.size;
     this.maxMoveCount = numberOfMoves;
     this.moveCount = 0;
-    Point.prototype.size = size;
-    this.universe = new Universe(new Robby(new Point(), dna));
+    let startingPoint = new Point(0, 0);
+    let robot = new Robby(startingPoint, dnaArray);
+    let cans = new Cans(numberOfCans);
+    this.universe = new Universe(robot, cans);
     return this;
 }
 

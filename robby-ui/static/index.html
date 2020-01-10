@@ -21,21 +21,37 @@
 
 
 <div class="container">
-    <div class="box left" id="simulation">
-        <span id="title"> </span>
+
+    <div class="box left" id="simulation1">
+        <span id="title1"> </span>
+    </div>
+    <div class="box left" id="simulation2">
+        <span id="title2"> </span>
+    </div>
+    <div class="box left" id="simulation3">
+        <span id="title3"> </span>
+    </div>
+    <div class="box left" id="simulation4">
+        <span id="title4"> </span>
+    </div>
+    <div class="box left" id="simulation5">
+        <span id="title5"> </span>
+    </div>
+    <div class="box left" id="simulation6">
+        <span id="title6"> </span>
     </div>
 </div>
 
 <div class="text">
     <h2>What is this?</h2>
     <p>
-       Description:
+        Description:
+    </p>
     <ul>
         <li>
             line 1
         </li>
     </ul>
-    </p>
     <p>
         It is a toy. You can see how the robot is trained and gets gradually better.
     </p>
@@ -43,39 +59,92 @@
 
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<!--suppress HtmlUnknownTarget -->
 <script src="js/geneticrobby.js"></script>
 <script>
 
-    const interval = 50;
-    let url = '/gen-3000.json';
-    let dna = null;
+    const interval = 10;
+    let genome = null;
+    let generation = 0;
+    let config = null;
+    let summary = null;
 
-    fetch(url)
-        .then(res => res.json())
-        .then((out) => {
-            dna = out.bestSurvivor.dna;
-        })
-        .catch(err => {
-            throw err
-        });
+    Promise
+        .all([fetchConfig()])
+        .then(simulator);
 
-    (function simulator() {
-        let game = new geneticrobby.Game();
-        let grid = new geneticrobby.Grid("#simulation", "#title");
+    let grids = [1, 2, 3, 4, 5, 6].map(function (i) {
+        return new geneticrobby.Grid("#simulation" + i, "#title" + i);
+    });
+
+    let games = null;
+
+    function simulator() {
+        if (games == null) {
+            Promise.all([fetchDna()])
+                .then(function () {
+                    games = new Array(grids.length);
+                    for (let i = 0; i < grids.length; i++) {
+                        games[i] = new geneticrobby.Game(
+                            genome,
+                            config.boardWidth,
+                            config.boardHeight,
+                            config.numberOfCans,
+                            config.numberOfMoves);
+                    }
+                    loop();
+                });
+        }
 
         function loop() {
-            game.tick(function draw(cells) {
-                let text = `moves: ${game.moves()} | score: ${game.score()}`;
-                grid.draw(cells, text);
-            });
-            if (game.isOver()) {
-                game = new geneticrobby.Game(dna);
+            for (let i = 0; i < grids.length; i++) {
+                games[i].tick(function draw(cells) {
+                    let text = `moves: ${games[i].moves()} | score: ${games[i].score()} | gen: ${generation}`;
+                    grids[i].draw(cells, text);
+                });
+                if (games[i].isOver()) {
+                    setTimeout(simulator, interval);
+                    games = null;
+                    return;
+                }
             }
             setTimeout(loop, interval);
         }
+    }
 
-        loop();
-    })();
+    async function fetchDna() {
+        return fetch('/data/gen-latest.json')
+            .then(res => res.json())
+            .then((out) => {
+                genome = out.bestGenome.dna;
+                generation = out.generationId;
+            })
+            .catch(err => {
+                throw err
+            })
+    }
+
+    async function fetchConfig() {
+        return fetch('/data/config.json')
+            .then(res => res.json())
+            .then((out) => {
+                config = out;
+            })
+            .catch(err => {
+                throw err
+            })
+    }
+
+    async function fetchSummary() {
+        return fetch('/data/summary.json')
+            .then(res => res.json())
+            .then((out) => {
+                summary = out;
+            })
+            .catch(err => {
+                throw err
+            })
+    }
 </script>
 
 
