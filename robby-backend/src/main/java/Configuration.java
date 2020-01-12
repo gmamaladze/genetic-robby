@@ -5,12 +5,12 @@ import java.io.IOException;
 
 public class Configuration {
 
-    private double mutationProbability = 0.009;
-    private double survivorQuota = 0.2;
-    private double genPoolQuota = 0.8;
-    private int populationSize = 200;
-    private long numberOfBoards = 100;
-    private double newBoardQuota = 0.05;
+    private double mutationProbability = 0.005;
+    private double survivorQuota = 0.03;
+    private double genPoolQuota = 0.9;
+    private int populationSize = 300;
+    private long numberOfBoards = 200;
+    private double newBoardQuota = 0.02;
     private int boardWidth = 10;
     private int boardHeight = 10;
     private int numberOfCans = 50;

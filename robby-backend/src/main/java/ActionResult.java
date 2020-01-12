@@ -15,12 +15,4 @@ public class ActionResult {
     public int getRewardPointCount() {
         return this.reward;
     }
-
-    @Override
-    public String toString() {
-        return "ActionResult{" +
-                "position=" + position +
-                ", reward=" + reward +
-                '}';
-    }
 }

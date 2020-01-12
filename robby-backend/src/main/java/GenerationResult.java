@@ -18,10 +18,7 @@ public class GenerationResult {
 
     @Override
     public String toString() {
-        return String.format("GenerationResult{ " +
-                "generationId=%5d " +
-                ", avgScore=%10.4f " +
-                '}', generationId, avgScore);
+        return String.format("Generation: %5d  Score: %10.4f ", generationId, avgScore);
     }
 
     public double getAvgScore() {
@@ -37,6 +34,7 @@ public class GenerationResult {
         return genomeResults;
     }
 
+    @SuppressWarnings({"unused", "Used by deserializer."})
     public Genome getBestGenome() {
         return genomeResults[genomeResults.length - 1].getGenome();
     }

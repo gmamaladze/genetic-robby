@@ -2,7 +2,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
@@ -97,13 +96,6 @@ public class Genome {
     protected Genome clone() {
         long uniqueId = uniqueCounter.incrementAndGet();
         return new Genome(uniqueId, this.dna.clone());
-    }
-
-    @Override
-    public String toString() {
-        return "DNA{" +
-                "dna=" + Arrays.toString(dna) +
-                '}';
     }
 }
 
