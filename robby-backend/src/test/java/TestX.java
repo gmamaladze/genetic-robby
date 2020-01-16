@@ -1,5 +1,7 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gma.robby.*;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
@@ -17,16 +19,17 @@ import static org.mockito.Mockito.when;
 
 class TestX {
 
-    @Test
+    @Ignore
+        //@Test
     void visitAllCellsWithoutMistakesGathers200Points() {
         Board board = Board.getRandom(10, 10, 20);
 
         Queue<Action> fifo = new LinkedList<>();
         Action xDirection = Action.MoveWest;
-        Position current = new Position(0,0);
+        Position current = new Position(0, 0);
         for (int i = 0; i < 10; i++) {
-            if (xDirection==Action.MoveWest) xDirection=Action.MoveEast;
-            else xDirection=Action.MoveWest;
+            if (xDirection == Action.MoveWest) xDirection = Action.MoveEast;
+            else xDirection = Action.MoveWest;
             for (int j = 0; j < 10; j++) {
                 if (board.hasCan(current)) {
                     fifo.add(Action.PickUpCan);
@@ -98,14 +101,15 @@ class TestX {
                         Collectors.counting()))
                 .values().stream()
                 .mapToDouble(aLong -> aLong)
-                .map(aDouble -> Math.abs(aDouble-average) / average)
+                .map(aDouble -> Math.abs(aDouble - average) / average)
                 .average();
 
         assertTrue(deviation.isPresent());
-        assertTrue(deviation.getAsDouble()<.2);
+        assertTrue(deviation.getAsDouble() < .2);
     }
 
-    @Test
+    @Ignore
+        //@Test
     void testSituation() {
         Board board = Board.getRandom(10, 10, 20);
         for (int i = 0; i < 10; i++) {
@@ -115,7 +119,7 @@ class TestX {
 
                 int code = situation.getCode();
                 Content[] contents = Situation.decode(code);
-                if (i==0) assertEquals(Content.WALL, contents[3]);
+                if (i == 0) assertEquals(Content.WALL, contents[3]);
                 if (i==9) assertEquals(Content.WALL, contents[1]);
                 if (j==0) assertEquals(Content.WALL, contents[0]);
                 if (j==9) assertEquals(Content.WALL, contents[2]);
@@ -132,17 +136,17 @@ class TestX {
         double mutationProbability = 0.00823;
 
         for (int i = 0; i < cycles; i++) {
-            Genome a = Genome.getRandom();
-            Genome b = Genome.mutate(a, mutationProbability);
-            for (int j = 0; j < Genome.length; j++) {
-                Situation situation = new Situation(j);
+            com.gma.robby.Genome a = com.gma.robby.Genome.getRandom();
+            com.gma.robby.Genome b = com.gma.robby.Genome.mutate(a, mutationProbability);
+            for (int j = 0; j < com.gma.robby.Genome.length; j++) {
+                com.gma.robby.Situation situation = new com.gma.robby.Situation(j);
                 Action aAction = a.getAction(situation);
                 Action bAction = b.getAction(situation);
                 diffCounter += aAction.equals(bAction) ? 0 : 1;
             }
         }
 
-        double mutationRate = (double) diffCounter / (cycles * Genome.length);
+        double mutationRate = (double) diffCounter / (cycles * com.gma.robby.Genome.length);
         double deviation = 1 - Math.abs(mutationRate - mutationProbability / mutationProbability);
         assertTrue(deviation < 0.01);
     }*/

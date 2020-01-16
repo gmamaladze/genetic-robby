@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 import org.apache.commons.cli.*;
 
 import java.io.File;
@@ -9,7 +11,7 @@ public class App {
 		final Options options = new Options();
 		options.addOption(new Option("d", "debug", false, "Turn on debug."));
 		options.addOption(new Option("h", "help", false, "Print this message."));
-		options.addOption(new Option("c", "config", true, "Configuration JSON file."));
+		options.addOption(new Option("c", "config", true, "com.gma.robby.Configuration JSON file."));
 		options.addOption(new Option("o", "output", true, "Output directory."));
 
 		CommandLineParser parser = new DefaultParser();

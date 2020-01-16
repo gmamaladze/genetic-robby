@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;

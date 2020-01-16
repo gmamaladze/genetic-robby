@@ -1,8 +1,10 @@
+package com.gma.robby;
+
 import java.util.Random;
 
 public enum Action {
 
-    MoveNorth   (0) {
+    MoveNorth(0) {
         @Override
         public ActionResult perform(Position position, Board board) {
             return this.move(position, board, Offset.NORTH);

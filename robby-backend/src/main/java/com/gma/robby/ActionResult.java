@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 public class ActionResult {
     private final Position position;
     private final int reward;

@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 import java.awt.*;
 import java.util.HashSet;
 import java.util.Random;
@@ -13,7 +15,7 @@ public class Board {
         this.size = size;
     }
 
-    static Board getRandom(int width, int height, int cansCount) {
+    public static Board getRandom(int width, int height, int cansCount) {
         Set<Position> cans = new HashSet<>();
         double probability = (double) cansCount / (width * height);
         Random rnd = new Random(System.currentTimeMillis());

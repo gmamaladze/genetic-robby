@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 public enum Offset {
     NORTH {
         @Override

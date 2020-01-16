@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 public class SessionResult {
     private int score;
     private Genome Genome;

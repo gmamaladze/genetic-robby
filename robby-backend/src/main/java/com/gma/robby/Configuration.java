@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -115,7 +117,7 @@ public class Configuration {
 
     @Override
     public String toString() {
-        return "Configuration{" +
+        return "com.gma.robby.Configuration{" +
                 "mutationProbability=" + mutationProbability +
                 ", survivorQuota=" + survivorQuota +
                 ", populationSize=" + populationSize +

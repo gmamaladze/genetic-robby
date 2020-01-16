@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 public class GenomeResult {
     private final Genome genome;
     private final double fitness;

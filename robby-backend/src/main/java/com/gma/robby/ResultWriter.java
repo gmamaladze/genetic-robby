@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SequenceWriter;
 

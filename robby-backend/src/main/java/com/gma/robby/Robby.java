@@ -1,3 +1,5 @@
+package com.gma.robby;
+
 public class Robby {
     private Position position;
     private int pointCount;
