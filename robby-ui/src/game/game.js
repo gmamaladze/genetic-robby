@@ -7,14 +7,20 @@ import {Cans} from "./cans";
 
 export {Game};
 
-function Game(dnaArray, width = 10, height = 10, numberOfCans = 50, numberOfMoves = 200) {
+function Game(dnaArray, width = 10, height = 10, numberOfMoves = 200, canPositions) {
     this.size = new Point(width, height);
     Point.prototype.size = this.size;
     this.maxMoveCount = numberOfMoves;
     this.moveCount = 0;
     let startingPoint = new Point(0, 0);
     let robot = new Robby(startingPoint, dnaArray);
-    let cans = new Cans(numberOfCans);
+
+    let cans = new Cans(0);
+    for (let i = 0; i < canPositions.length; i++) {
+        let pos = canPositions[i];
+        cans.placeCan(new Point(pos.x, pos.y));
+    }
+
     this.universe = new Universe(robot, cans);
     return this;
 }

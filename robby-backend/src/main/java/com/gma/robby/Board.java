@@ -1,5 +1,7 @@
 package com.gma.robby;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.awt.*;
 import java.util.HashSet;
 import java.util.Random;
@@ -7,10 +9,12 @@ import java.util.Set;
 
 public class Board {
 
-    private Set<Position> cans;
-    private Point size;
+    private static final Random rnd = new Random(System.currentTimeMillis());
+    private final Set<Position> cans;
+    private final Point size;
 
-    private Board(Set<Position> cans, Point size) {
+    @JsonCreator
+    public Board(Set<Position> cans, Point size) {
         this.cans = cans;
         this.size = size;
     }
@@ -18,7 +22,6 @@ public class Board {
     public static Board getRandom(int width, int height, int cansCount) {
         Set<Position> cans = new HashSet<>();
         double probability = (double) cansCount / (width * height);
-        Random rnd = new Random(System.currentTimeMillis());
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 boolean isCan = rnd.nextDouble() < probability;
@@ -38,10 +41,10 @@ public class Board {
     }
 
     public boolean isWall(Position position) {
-        return position.x < 0 ||
-                position.y < 0 ||
-                position.x >= this.size.x ||
-                position.y >= this.size.y;
+        return position.getX() < 0 ||
+                position.getY() < 0 ||
+                position.getX() >= this.size.x ||
+                position.getY() >= this.size.y;
     }
 
     public boolean hasCan(Position position) {
@@ -82,5 +85,15 @@ public class Board {
                 : (hasCan(position)
                 ? Content.CAN
                 : Content.EMPTY);
+    }
+
+    @SuppressWarnings("unused")
+    public Set<Position> getCans() {
+        return cans;
+    }
+
+    @SuppressWarnings("unused")
+    public Point getSize() {
+        return size;
     }
 }

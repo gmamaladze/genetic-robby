@@ -20,8 +20,8 @@ public class Genome {
     private final int[] dna;
 
     @JsonCreator
-    Genome(@JsonProperty("id") long uniqueId,
-           @JsonProperty("dna") int[] dna) {
+    public Genome(@JsonProperty("id") long uniqueId,
+                  @JsonProperty("dna") int[] dna) {
         this.uniqueId = uniqueId;
         this.dna = dna;
     }
@@ -50,11 +50,11 @@ public class Genome {
         return new Genome(uniqueCounter.incrementAndGet(), merged);
     }
 
-    private static void mutate(int[] merged, double mutationProbability) {
-        int mutationCount = (int) Math.round(length * mutationProbability);
-        for (int i = 0; i < mutationCount; i++) {
-            int mutationIndex = random.nextInt(length);
-            merged[mutationIndex] = getRandomAction(merged[i]);
+    private static void mutate(int[] a, double mutationProbability) {
+        for (int i = 0; i < a.length; i++) {
+            a[i] = random.nextDouble() <= mutationProbability
+                    ? getRandomAction(a[i])
+                    : a[i];
         }
     }
 

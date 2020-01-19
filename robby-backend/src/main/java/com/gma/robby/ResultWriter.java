@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collection;
 
 public class ResultWriter implements AutoCloseable {
 
@@ -23,6 +24,11 @@ public class ResultWriter implements AutoCloseable {
         FileWriter fileWriter = new FileWriter(file, true);
         mapper = new ObjectMapper();
         seqWriter = mapper.writer().writeValuesAsArray(fileWriter);
+    }
+
+    public void write(Collection<Board> board) throws IOException {
+        String fileName = this.dirName + "/boards.json";
+        this.mapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName), board);
     }
 
     public void write(GenerationResult generationResult) throws IOException {

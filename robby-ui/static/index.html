@@ -68,9 +68,10 @@
     let generation = 0;
     let config = null;
     let summary = null;
+    let boards = null;
 
     Promise
-        .all([fetchConfig()])
+        .all([fetchConfig(), fetchBoards()])
         .then(simulator);
 
     let grids = [1, 2, 3, 4, 5, 6].map(function (i) {
@@ -89,8 +90,8 @@
                             genome,
                             config.boardWidth,
                             config.boardHeight,
-                            config.numberOfCans,
-                            config.numberOfMoves);
+                            config.numberOfMoves,
+                            boards[i].cans);
                     }
                     loop();
                 });
@@ -129,6 +130,17 @@
             .then(res => res.json())
             .then((out) => {
                 config = out;
+            })
+            .catch(err => {
+                throw err
+            })
+    }
+
+    async function fetchBoards() {
+        return fetch('/data/boards.json')
+            .then(res => res.json())
+            .then((out) => {
+                boards = out;
             })
             .catch(err => {
                 throw err

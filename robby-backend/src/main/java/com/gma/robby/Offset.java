@@ -4,25 +4,25 @@ public enum Offset {
     NORTH {
         @Override
         public Position from(Position position) {
-            return new Position(position.x, position.y - 1);
+            return new Position(position.getX(), position.getY() - 1);
         }
     },
     SOUTH {
         @Override
         public Position from(Position position) {
-            return new Position(position.x, position.y + 1);
+            return new Position(position.getX(), position.getY() + 1);
         }
     },
     EAST {
         @Override
         public Position from(Position position) {
-            return new Position(position.x + 1, position.y);
+            return new Position(position.getX() + 1, position.getY());
         }
     },
     WEST {
         @Override
         public Position from(Position position) {
-            return new Position(position.x - 1, position.y);
+            return new Position(position.getX() - 1, position.getY());
         }
     },
     CURRENT {

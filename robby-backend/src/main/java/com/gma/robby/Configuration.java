@@ -7,18 +7,18 @@ import java.io.IOException;
 
 public class Configuration {
 
-    private double mutationProbability = 0.005;
-    private double survivorQuota = 0.03;
-    private double genPoolQuota = 0.9;
-    private int populationSize = 300;
-    private long numberOfBoards = 200;
-    private double newBoardQuota = 0.02;
+    private double mutationProbability = 0.0082;
+    private double survivorQuota = 0.0;
+    private double genPoolQuota = 1.0;
+    private int populationSize = 100;
+    private long numberOfBoards = 50;
+    private double newBoardQuota = 0.0;
     private int boardWidth = 10;
     private int boardHeight = 10;
     private int numberOfCans = 50;
     private int numberOfMoves = 200;
     private long numberOfGenerations = 100000;
-    private int numberOfThreads = 4;
+    private int numberOfThreads = 12;
     private boolean debug = false;
 
     public static Configuration getDefault() {

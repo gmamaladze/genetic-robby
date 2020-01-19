@@ -21,6 +21,10 @@ public class Robby {
         return result;
     }
 
+    public Position getPosition() {
+        return this.position;
+    }
+
     public int getPointCount() {
         return pointCount;
     }
